@@ -1,6 +1,8 @@
 package com.example.demo.exception;
 
+import org.springframework.http.HttpStatus;
 import com.example.demo.dto.request.ApiResponse;
+import com.example.demo.dto.response.AuthenticationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +27,7 @@ public class GlobalExceptionHandler {
         apiResponse.setMessage(errorCode.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
+
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handlingMethodArgumentNotValidException(MethodArgumentNotValidException e) {
