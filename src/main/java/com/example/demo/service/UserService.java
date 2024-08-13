@@ -32,6 +32,7 @@ public class UserService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
+
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
