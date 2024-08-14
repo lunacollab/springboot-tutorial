@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import com.example.demo.entity.Permission;
 
@@ -28,11 +27,23 @@ public class RoleService {
     PermissionRepository permissionRepository;
     RoleMapper roleMapper;
 
-    public RoleResponse create(RoleRequest request){
-        if (request.getPermissions() == null || request.getPermissions().isEmpty()) {
-            request.setPermissions(getRandomPermissions(3));
-        }
 
+    public RoleResponse create(RoleRequest request) {
+        if (isAdminRole(request)) {
+            if (request.getPermissions() == null || request.getPermissions().isEmpty()) {
+                request.setPermissions(getAdminPermissions());
+            }
+        } else {
+            if (request.getPermissions() == null || request.getPermissions().isEmpty()) {
+                request.setPermissions(getNonAdminPermissions());
+            } else {
+                request.setPermissions(
+                        request.getPermissions().stream()
+                                .filter(permission -> !permission.equals("APPROVE_POST") && !permission.equals("REJECT_POST"))
+                                .collect(Collectors.toSet())
+                );
+            }
+        }
         var role = roleMapper.toRole(request);
         var permissions = permissionRepository.findAllById(request.getPermissions());
         role.setPermissions(new HashSet<>(permissions));
@@ -40,14 +51,39 @@ public class RoleService {
         return roleMapper.toRoleResponse(role);
     }
 
+    private boolean isAdminRole(RoleRequest request) {
+        return "ADMIN".equalsIgnoreCase(request.getName());
+    }
+
+    private Set<String> getAdminPermissions() {
+        List<String> allPermissionNames = permissionRepository.findAll()
+                .stream()
+                .map(Permission::getName)
+                .filter(permissionName -> !"FIXED_POST".equals(permissionName))
+                .collect(Collectors.toList());
+
+        allPermissionNames.add("APPROVE_POST");
+        allPermissionNames.add("CREATE_POST");
+        allPermissionNames.add("REJECT_POST");
+
+        return new HashSet<>(allPermissionNames);
+    }
+
+    private Set<String> getNonAdminPermissions() {
+        Set<String> permissions = new HashSet<>();
+        permissions.add("CREATE_POST");
+        permissions.add("FIXED_POST");
+        permissions.addAll(getRandomPermissions(2));
+        return permissions;
+    }
 
     public Set<String> getRandomPermissions(int maxSize) {
-        List<String> allPermissionIds = permissionRepository.findAll()
+        List<String> allPermissionNames = permissionRepository.findAll()
                 .stream()
                 .map(Permission::getName)
                 .collect(Collectors.toList());
-        Collections.shuffle(allPermissionIds);
-        return allPermissionIds.stream()
+        Collections.shuffle(allPermissionNames);
+        return allPermissionNames.stream()
                 .limit(maxSize)
                 .collect(Collectors.toSet());
     }

@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: demo
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring-boot-mysql
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+
+server:
+  servlet:
+    context-path: /identity
+
+jwt:
+  signerKey: vDIYvoYyFIq7HgU6fBg5FyLgqQJXJ/8qfaBqp7YZtnr6cISc3vdEg+dWTjWp47i5
