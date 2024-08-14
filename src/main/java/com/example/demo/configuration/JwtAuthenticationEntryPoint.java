@@ -13,16 +13,13 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
-            throws IOException .{
+            throws IOException, ServletException {
         ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
-
 
         response.setStatus(errorCode.getStatusCode().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .code(errorCode.getCode())
@@ -30,8 +27,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(apiResponse);
-        response.getWriter().write(jsonResponse);
+
+        response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
         response.flushBuffer();
     }
 }

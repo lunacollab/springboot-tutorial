@@ -4,7 +4,6 @@ import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.UserCreationRequest;
 import com.example.demo.dto.request.UserUpdateRequest;
 import com.example.demo.dto.response.UserResponse;
-import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -16,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserController {
     UserService userService;
 
@@ -30,10 +29,12 @@ public class UserController {
                 .result(userService.createUser(request))
                 .build();
     }
+
     @GetMapping
     ApiResponse<List<UserResponse>> getUsers(){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("Username : {}", authentication.getName());
+
+        log.info("Username: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 
         return ApiResponse.<List<UserResponse>>builder()
