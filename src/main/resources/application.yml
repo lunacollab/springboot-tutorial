@@ -17,3 +17,5 @@ server:
 
 jwt:
   signerKey: vDIYvoYyFIq7HgU6fBg5FyLgqQJXJ/8qfaBqp7YZtnr6cISc3vdEg+dWTjWp47i5
+  valid-duration: 60
+  refreshable-duration: 120
