@@ -114,17 +114,21 @@ public class AuthenticationService {
     }
 
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
-      var signToken = verifyToken(request.getToken(), true);
+        try{
+            var signToken = verifyToken(request.getToken(), true);
 
-      String jit = signToken.getJWTClaimsSet().getJWTID();
-      Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+            String jit = signToken.getJWTClaimsSet().getJWTID();
+            Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
 
-      InvalidatedToken invalidatedToken = InvalidatedToken.builder()
-              .id(jit)
-              .expiryTime(expiryTime)
-              .build();
+            InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                    .id(jit)
+                    .expiryTime(expiryTime)
+                    .build();
 
-      invalidatedTokenRepository.save(invalidatedToken);
+            invalidatedTokenRepository.save(invalidatedToken);
+        }catch(AppException e) {
+          log.info("Token already expired");
+        }
     }
 
     private SignedJWT verifyToken(String token,boolean isRefresh) throws JOSEException, ParseException {
