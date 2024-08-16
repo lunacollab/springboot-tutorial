@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public class UserControllerIntegrationTest {
+class UserControllerIntegrationTest {
     @Container
     static final MySQLContainer<?> MYSQL_CONTAINER = new MySQLContainer<>("mysql:8.0");
 

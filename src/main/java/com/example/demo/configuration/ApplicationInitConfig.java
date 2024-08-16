@@ -25,6 +25,8 @@ public class ApplicationInitConfig {
 
     PasswordEncoder passwordEncoder;
 
+    private final String ADMIN_ = "admin";
+
     @Bean
     @ConditionalOnProperty(
             prefix = "spring",
@@ -32,14 +34,13 @@ public class ApplicationInitConfig {
             havingValue = "com.mysql.cj.jdbc.Driver")
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
-            if (userRepository.findByUsername("admin").isEmpty()) {
+            if (userRepository.findByUsername(ADMIN_).isEmpty()) {
                 var roles = new HashSet<String>();
                 roles.add(Role.ADMIN.name());
 
                 User user = User.builder()
-                        .username("admin")
+                        .username(ADMIN_)
                         .password(passwordEncoder.encode("admin"))
-                        // .roles(roles)
                         .build();
 
                 userRepository.save(user);
