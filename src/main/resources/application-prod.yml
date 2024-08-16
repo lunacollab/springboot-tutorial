@@ -1,0 +1,4 @@
+#jwt signedKey is config enviroment variable
+jwt:
+  valid-duration: 7200
+  refreshable-duration: 72000

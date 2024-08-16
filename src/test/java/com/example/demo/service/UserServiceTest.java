@@ -68,7 +68,6 @@ class UserServiceTest {
 
     @Test
     void createUser_validRequest_success() {
-        when(userRepository.existsByUsername(anyString())).thenReturn(false);
         when(userRepository.save(any())).thenReturn(user);
 
         var response = userService.createUser(request);
@@ -78,7 +77,6 @@ class UserServiceTest {
 
     @Test
     void createUser_userExisted_fail() {
-        when(userRepository.existsByUsername(anyString())).thenReturn(true);
         var exception = assertThrows(AppException.class, () -> userService.createUser(request));
         Assertions.assertThat(exception.getErrorCode().getCode()).isEqualTo(1002);
     }

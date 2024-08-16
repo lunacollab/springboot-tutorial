@@ -69,6 +69,8 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        log.info("Signkey: {}", SIGNER_KEY);
+
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepository
                 .findByUsername(request.getUsername())
@@ -84,6 +86,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
+
         var signedJWT = verifyToken(request.getToken(), false);
 
         var jit = signedJWT.getJWTClaimsSet().getJWTID();
