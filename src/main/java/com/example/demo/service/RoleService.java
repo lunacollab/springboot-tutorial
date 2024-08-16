@@ -1,22 +1,24 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.request.RoleRequest;
-import com.example.demo.dto.response.RoleResponse;
-import com.example.demo.mapper.RoleMapper;
-import com.example.demo.repository.PermissionRepository;
-import com.example.demo.repository.RoleRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import com.example.demo.entity.Permission;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.dto.request.RoleRequest;
+import com.example.demo.dto.response.RoleResponse;
+import com.example.demo.entity.Permission;
+import com.example.demo.mapper.RoleMapper;
+import com.example.demo.repository.PermissionRepository;
+import com.example.demo.repository.RoleRepository;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,6 @@ public class RoleService {
     PermissionRepository permissionRepository;
     RoleMapper roleMapper;
 
-
     public RoleResponse create(RoleRequest request) {
         if (isAdminRole(request)) {
             if (request.getPermissions() == null || request.getPermissions().isEmpty()) {
@@ -37,11 +38,9 @@ public class RoleService {
             if (request.getPermissions() == null || request.getPermissions().isEmpty()) {
                 request.setPermissions(getNonAdminPermissions());
             } else {
-                request.setPermissions(
-                        request.getPermissions().stream()
-                                .filter(permission -> !permission.equals("APPROVE_POST") && !permission.equals("REJECT_POST"))
-                                .collect(Collectors.toSet())
-                );
+                request.setPermissions(request.getPermissions().stream()
+                        .filter(permission -> !permission.equals("APPROVE_POST") && !permission.equals("REJECT_POST"))
+                        .collect(Collectors.toSet()));
             }
         }
         var role = roleMapper.toRole(request);
@@ -56,8 +55,7 @@ public class RoleService {
     }
 
     private Set<String> getAdminPermissions() {
-        List<String> allPermissionNames = permissionRepository.findAll()
-                .stream()
+        List<String> allPermissionNames = permissionRepository.findAll().stream()
                 .map(Permission::getName)
                 .filter(permissionName -> !"FIXED_POST".equals(permissionName))
                 .collect(Collectors.toList());
@@ -78,25 +76,17 @@ public class RoleService {
     }
 
     public Set<String> getRandomPermissions(int maxSize) {
-        List<String> allPermissionNames = permissionRepository.findAll()
-                .stream()
-                .map(Permission::getName)
-                .collect(Collectors.toList());
+        List<String> allPermissionNames =
+                permissionRepository.findAll().stream().map(Permission::getName).collect(Collectors.toList());
         Collections.shuffle(allPermissionNames);
-        return allPermissionNames.stream()
-                .limit(maxSize)
-                .collect(Collectors.toSet());
+        return allPermissionNames.stream().limit(maxSize).collect(Collectors.toSet());
     }
 
-
-    public List<RoleResponse> getAll(){
-        return roleRepository.findAll()
-                .stream()
-                .map(roleMapper::toRoleResponse)
-                .toList();
+    public List<RoleResponse> getAll() {
+        return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();
     }
 
-    public void delete(String role){
+    public void delete(String role) {
         roleRepository.deleteById(role);
     }
 }

@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.request.UserCreationRequest;
-import com.example.demo.dto.response.UserResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,12 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDate;
+import com.example.demo.dto.request.UserCreationRequest;
+import com.example.demo.dto.response.UserResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
@@ -32,11 +34,11 @@ public class UserControllerIntegrationTest {
 
     @DynamicPropertySource
     static void configureDataSource(DynamicPropertyRegistry registry) {
-      registry.add("spring.datasource.url", MYSQL_CONTAINER::getJdbcUrl);
-      registry.add("spring.datasource.username", MYSQL_CONTAINER::getUsername);
-      registry.add("spring.datasource.password", MYSQL_CONTAINER::getPassword);
-      registry.add("spring.datasource.driverClassName", () -> "com.mysql.cj.jdbc.Driver");
-      registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
+        registry.add("spring.datasource.url", MYSQL_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", MYSQL_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", MYSQL_CONTAINER::getPassword);
+        registry.add("spring.datasource.driverClassName", () -> "com.mysql.cj.jdbc.Driver");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
     }
 
     @Autowired
@@ -73,7 +75,7 @@ public class UserControllerIntegrationTest {
         objectMapper.registerModule(new JavaTimeModule());
         String content = objectMapper.writeValueAsString(request);
 
-      var response =   mockMvc.perform(MockMvcRequestBuilders.post("/users")
+        var response = mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -82,8 +84,6 @@ public class UserControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("result.firstName").value("John"))
                 .andExpect(MockMvcResultMatchers.jsonPath("result.lastName").value("Doe"));
 
-      log.info("Result: {}", response.andReturn().getResponse().getContentAsString());
+        log.info("Result: {}", response.andReturn().getResponse().getContentAsString());
     }
-
-
 }
