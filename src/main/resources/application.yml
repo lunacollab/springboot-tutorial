@@ -1,12 +1,12 @@
-#url,username,password (config enviroment variable)
+#url,username,password (config enviroment variable), if enviroment variable not working (use default value)
 spring:
   application:
     name: demo
   datasource:
-    url: ${DBMS_CONNECTION}
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/spring-boot-mysql}
     driverClassName: "com.mysql.cj.jdbc.Driver"
-    username: ${DBMS_USERNAME}
-    password: ${DBMS_PASSWORD}
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:123456}
   jpa:
     hibernate:
       ddl-auto: update
