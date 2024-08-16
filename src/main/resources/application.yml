@@ -1,3 +1,4 @@
+#url,username,password (config enviroment variable)
 spring:
   application:
     name: demo
