@@ -4,7 +4,7 @@ spring:
     name: demo
   datasource:
     url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/spring-boot-mysql}
-    driverClassName: "com.mysql.cj.jdbc.Driver"
+    driverClassName: ${DBMS_DRIVER:com.mysql.cj.jdbc.Driver}
     username: ${DBMS_USERNAME:root}
     password: ${DBMS_PASSWORD:123456}
   jpa:
